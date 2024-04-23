@@ -6,9 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "nodemon index.js",
-    "client": "npm start --prefix ./client",
-    "start": "cd ../client && npm run dev",
-    "dev": "concurrently -n \"client,backend-2\" -c \"bgBlue,bgYellow\" \"npm start\" \"npm run server\""
+    "dev": "nodemon index.js"
   },
   "author": "Somnath Roy",
   "license": "ISC",
