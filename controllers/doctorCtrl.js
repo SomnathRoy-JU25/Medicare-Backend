@@ -62,9 +62,14 @@ exports.getDoctorByIdController = async (req, res) => {
 
 exports.doctorAppointmentController = async (req, res) => {
   try {
-    const doctor = await doctorModel.findOne({ userId: req.body.userId });
-    // const appointments = await appointmentModel.find({ doctorId: doctor._id });
-    const appointments = await appointmentModel.find();
+    let appointments;
+    if (req.user.isDoctor) {
+      const doctor = await doctorModel.findOne(req.body.id);
+      appointments = await appointmentModel.find({ doctorId: doctor._id });
+    } else {
+      const user = await userModel.findById(req.body.id);
+      appointments = await appointmentModel.find(user);
+    }
     // console.log(appointments);
     res.status(200).send({
       success: true,
@@ -83,23 +88,31 @@ exports.doctorAppointmentController = async (req, res) => {
 
 exports.updateStatusController = async (req, res) => {
   try {
-    const { appoinmentsId, status } = req.body;
-    const appointments = await appointmentModel.findByIdAndUpdate(
-      appoinmentsId,
+    const { appointmentId, status } = req.body;
+    const appointment = await appointmentModel.findByIdAndUpdate(
+      appointmentId,
       { status }
     );
-    const user = await userModel.findOne({ _id: appointments.userId });
-    const notification = user.notification;
-    notification.push({
-      type: "Status-updated",
-      message: `your appointments has been updated ${status}`,
-      onClickPath: "/doctor-appointments",
-    });
-    await user.save();
+
+    const user = await userModel.findById({ _id: appointment.userId });
+
+    if (user) {
+      const notification = user.notification || [];
+      notification.push({
+        type: "Status-updated",
+        message: `Your appointment has been ${status}`,
+        onClickPath: "/dashboard/doctor-appointments",
+      });
+
+      user.isDoctor = status === "approved";
+      user.notification = notification;
+      await user.save();
+    } else {
+    }
     res.status(200).send({
       success: true,
-      message: "Doctor appointments updated " + status,
-      data: appointments,
+      message: `Doctor appointment has been ${status}`,
+      data: appointment,
     });
   } catch (error) {
     console.log(error);
