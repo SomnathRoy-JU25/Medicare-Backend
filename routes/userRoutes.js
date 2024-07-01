@@ -2,13 +2,11 @@
 const express = require("express");
 const router = express.Router();
 const { auth } = require("../middlewares/auth");
-// const authmw = require("../middlewares/authmw");
-// Import the required controllers and middleware functions
+
 const {
   login,
   signup,
-  // changePassword,
-} = require("../controllers/Auth");
+} = require("../controllers/AuthController");
 
 const {
   authcontroller,
@@ -19,8 +17,8 @@ const {
   bookAppointmentController,
   bookingAvailabilityController,
   userAppointmentsController,
-  PredictDiseaseController,
-} = require("../controllers/userctrl");
+  // PredictDiseaseController,
+} = require("../controllers/BookAppUserCtrl");
 
 // apply doctor || POST
 router.post("/apply-doctor", auth, applyDoctorController);
@@ -32,7 +30,8 @@ router.get("/user-appointments", userAppointmentsController);
 router.post("/book-appointment", bookAppointmentController);
 
 //BOOKING Availability
-router.post("/booking-availability", auth, bookingAvailabilityController);
+// router.post("/booking-availability", auth, bookingAvailabilityController);
+router.post("/booking-availability", bookingAvailabilityController);
 
 // notification || POST
 router.post("/get-all-notification", GetAllNotificationController);
@@ -51,7 +50,7 @@ router.post("/login", login);
 router.post("/signup", signup);
 
 // POST || predict disease
-router.post("/predict_disease", PredictDiseaseController);
+// router.post("/predict_disease", PredictDiseaseController);
 
 // Export the router for use in the main application
 module.exports = router;
