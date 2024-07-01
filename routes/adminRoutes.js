@@ -12,7 +12,7 @@ const {
   getAllUsersController,
   getAllDoctorsController,
   changeAccountStatusController,
-} = require("../controllers/bookAppAdminCtrl");
+} = require("../controllers/BookAppAdminCtrl");
 
 
 //router object
